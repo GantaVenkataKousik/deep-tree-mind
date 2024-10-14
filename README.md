@@ -1,13 +1,11 @@
-# Neural-Backed Decision Trees &middot; [Site](http://nbdt.alvinwan.com) &middot; [Paper](http://nbdt.alvinwan.com/paper/) &middot; [Blog](https://towardsdatascience.com/what-explainable-ai-fails-to-explain-and-how-we-fix-that-1e35e37bee07) &middot; [Video](https://youtu.be/fQ2eNFCSRiA)
+# Deep Tree Mind 
 
-[![Try In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/alvinwan/neural-backed-decision-trees/blob/master/examples/load_pretrained_nbdts.ipynb)
-
-NBDTs match or outperform modern neural networks on CIFAR10, CIFAR100, TinyImagenet200, ImageNet and better generalize to unseen classes by up to 16%. Furthermore, our loss improves the original model’s accuracy by up to 2%. We attain 76.60% on ImageNet. 
+DTM match or outperform modern neural networks on CIFAR10, CIFAR100, TinyImagenet200, ImageNet and better generalize to unseen classes by up to 16%. Furthermore, our loss improves the original model’s accuracy by up to 2%. We attain 76.60% on ImageNet. 
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 **Table of Contents**
 
-- [Quickstart: Running and loading NBDTs](#quickstart)
+- [Quickstart: Running and loading DTM](#quickstart)
 - [Convert your own neural network into a decision tree](#convert-neural-networks-to-decision-trees)
 - [Training and evaluation](#training-and-evaluation)
 - [Results](#results)
@@ -54,13 +52,9 @@ nbdt https://images.pexels.com/photos/158109/kodiak-brown-bear-adult-portrait-wi
 
 <sub>*Pictures are taken from [pexels.com](http://pexels.com), which are free to use per the [Pexels license](https://www.pexels.com/photo-license/).*</sub>
 
-## Loading Pretrained NBDTs in Code
+## Loading Pretrained DTM in Code
 
-<i>Don't want to download? Try inference on a pre-filled [Google Colab Notebook](https://colab.research.google.com/github/alvinwan/neural-backed-decision-trees/blob/master/examples/load_pretrained_nbdts.ipynb).</i>
 
-`pip install nbdt` to use our models. We have pretrained models for ResNet18 and WideResNet28x10 for CIFAR10, CIFAR100, and TinyImagenet200. See [Models](#models) for adding other models. See [nbdt-pytorch-image-models](https://github.com/alvinwan/nbdt-pytorch-image-models) for EfficientNet on ImageNet.
-
-<sub>[Try below script on Google Colab](https://colab.research.google.com/github/alvinwan/neural-backed-decision-trees/blob/master/examples/load_pretrained_nbdts.ipynb)</sub>
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 ```python
@@ -74,8 +68,6 @@ model = SoftNBDT(
   arch='wrn28_10_cifar10',
   model=model)
 ```
-
-**Example in ~30 lines**: See [`nbdt/bin/nbdt`](https://github.com/alvinwan/neural-backed-decision-trees/blob/master/nbdt/bin/nbdt), which loads the pretrained model, loads an image, and runs inference on the image in ~30 lines. This file is the executable `nbdt` in the previous section. Try this in a [Google Colab Notebook](https://colab.research.google.com/github/alvinwan/neural-backed-decision-trees/blob/master/examples/load_pretrained_nbdts.ipynb).
 
 # Convert Neural Networks to Decision Trees
 
@@ -106,7 +98,7 @@ model = SoftNBDT(
 <details><summary><b>Example integration with a random neural network in 16 lines</b> <i>[click to expand]</i></summary>
 <div>
 
-You can also include arbitrary image classification neural networks not explicitly supported in this repository. For example, after installing [`pretrained-models.pytorch`](https://github.com/Cadene/pretrained-models.pytorch#quick-examples) using pip, you can instantiate and pass any pretrained model into our NBDT utility functions.
+
 
 
 ```python
@@ -129,7 +121,7 @@ criterion = SoftTreeSupLoss(dataset='Imagenet1000', hierarchy='induced-fbresnet1
 model = SoftNBDT(model=model, dataset='Imagenet1000', hierarchy='induced-fbresnet152')
 ```
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
-For more information on generating different hierarchies, see [Induced Hierarchy](#induced-hierarchy).
+
 </div>
 </details>
 
@@ -169,11 +161,6 @@ python setup.py develop # install all requirements
 bash scripts/gen_train_eval_wideresnet.sh # reproduce paper core CIFAR10, CIFAR100, and TinyImagenet200 results
 ```
 
-We (1) [generate the hierarchy](https://github.com/alvinwan/neural-backed-decision-trees#1-generate-hierarchy) and (2) train the neural network [with a tree supervision loss](https://github.com/alvinwan/neural-backed-decision-trees#2-tree-supervision-loss). Then, we (3) [run inference](https://github.com/alvinwan/neural-backed-decision-trees#3-inference) by featurizing images using the network backbone and running embedded decision rules. Notes:
-
-- See below sections for details on visualizations, reproducing ablation studies, and different configurations (e.g., different hierarchies).
-- To reproduce our ImageNet results, see [`examples/imagenet`](https://github.com/alvinwan/neural-backed-decision-trees/tree/master/examples/imagenet) for ResNet and [`nbdt-pytorch-image-models`](https://github.com/alvinwan/nbdt-pytorch-image-models) for EfficientNet.
-- For all scripts, you can use any [`torchvision`](https://pytorch.org/docs/stable/torchvision/models.html) model or any [`pytorchcv`](https://github.com/osmr/imgclsmob/tree/master/pytorch) model, as we directly support both model zoos. Customization for each step is explained below.
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 ## 1. Generate Hierarchy
@@ -367,9 +354,6 @@ python main.py --dataset=CIFAR10 --arch=wrn28_10_cifar10 --hierarchy=induced-wrn
 # get min and max entropy samples for baseline neural network
 python main.py --pretrained --dataset=TinyImagenet200 --eval --dataset-test=Imagenet1000 --disable-test-eval --analysis=TopEntropy  # or Entropy, or TopDifference
 
-# download public checkpoint
-wget https://github.com/alvinwan/neural-backed-decision-trees/releases/download/0.0.1/ckpt-TinyImagenet200-ResNet18-induced-ResNet18-SoftTreeSupLoss-tsw10.0.pth -O checkpoint/ckpt-TinyImagenet200-ResNet18-induced-ResNet18-SoftTreeSupLoss-tsw10.0.pth
-
 # get min and max 'path entropy' samples for NBDT
 python main.py --dataset TinyImagenet200 --resume --path-resume checkpoint/ckpt-TinyImagenet200-ResNet18-induced-ResNet18-SoftTreeSupLoss-tsw10.0.pth --eval --analysis NBDTEntropyMaxMin --dataset-test=Imagenet1000 --disable-test-eval --hierarchy induced-ResNet18
 ```
@@ -385,8 +369,6 @@ nbdt-wnids --classes animal vehicle
 # evaluate CIFAR10-trained ResNet18 on "Animal vs. Vehicle" superclasses, with images from TinyImagenet200
 python main.py --dataset-test=TinyImagenet200 --dataset=CIFAR10 --disable-test-eval --eval --analysis=Superclass --superclass-wnids n00015388 n04524313 --pretrained
 
-# download public checkpoint
-wget https://github.com/alvinwan/neural-backed-decision-trees/releases/download/0.0.1/ckpt-CIFAR100-ResNet18-induced-ResNet18-SoftTreeSupLoss.pth -O checkpoint/ckpt-CIFAR10-ResNet18-induced-SoftTreeSupLoss.pth
 
 # evaluate CIFAR10-trained NBDT-ResNet18 on "Animal vs. Vehicle" superclasses, with images from TinyImagenet200
 python main.py --dataset-test=TinyImagenet200 --dataset=CIFAR10 --disable-test-eval --eval --analysis=SuperclassNBDT --superclass-wnids n00015388 n04524313  --loss=SoftTreeSupLoss --resume
@@ -404,7 +386,6 @@ python main.py --dataset-test=Imagenet1000 --dataset=CIFAR10 --disable-test-eval
 python main.py --dataset-test=Imagenet1000 --dataset=CIFAR10 --disable-test-eval --eval --analysis=VisualizeDecisionNode --vdnw=n00015388 --pretrained --superclass-wnids n00015388 n04524313  # samples for "ungulate" node
 
 # download public checkpoint
-wget https://github.com/alvinwan/neural-backed-decision-trees/releases/download/0.0.1/ckpt-CIFAR100-ResNet18-induced-ResNet18-SoftTreeSupLoss.pth -O checkpoint/ckpt-CIFAR10-ResNet18-induced-SoftTreeSupLoss.pth
 
 # find samples representative for CIFAR10-trained NBDT with ResNet18 backbone, from animal and vehicle ImageNet images
 python main.py --dataset-test=Imagenet1000 --dataset=CIFAR10 --disable-test-eval --eval --analysis=VisualizeDecisionNode --vdnw=n01466257 --loss=SoftTreeSupLoss --resume --hierarchy=induced-ResNet18 --superclass-wnids n00015388 n04524313  # samples for "animal" node
@@ -473,7 +454,6 @@ To add a new model from scratch:
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 ## Dataset
 
-Without any modifications to `main.py`, you can use any image classification dataset found at [`torchvision.datasets`](https://pytorch.org/docs/stable/torchvision/datasets.html) by passing it to `--dataset`. To add a new dataset from scratch:
 
 1. Create a new file containing your dataset, such as `./nbdt/data/yourdata.py`. Say the data class is `YourData10`. Like before, only expose the dataset class via `__all__`. This dataset class should support a `.classes` attribute which returns a list of human-readable class names.
 2. Expose your new file via `'./nbdt/data/__init__.py'`: `from .yourdata import *`.
@@ -499,8 +479,6 @@ pytest nbdt tests
 
 <img src="https://user-images.githubusercontent.com/74038190/212284100-561aa473-3905-4a80-b561-0d28506553ee.gif" width="900">
 # Citation
-
-If you find this work useful for your research, please cite our [paper](http://nbdt.alvinwan.com/paper/):
 
 ```
 @misc{nbdt,

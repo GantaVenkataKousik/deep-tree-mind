@@ -1,5 +1,5 @@
 """
-Neural-Backed Decision Trees training on CIFAR10, CIFAR100, TinyImagenet200
+Deep Tree Mind training on CIFAR10, CIFAR100, TinyImagenet200
 
 The original version of this `main.py` was taken from kuangliu/pytorch-cifar.
 The script has since been heavily modified to support a number of different
